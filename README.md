@@ -14,7 +14,7 @@ covers/           Instagram highlight covers, one folder per direction
   <Direction>/    01_Start.png … 06_Off.png
 src/              generator scripts
 build/            contact sheets and previews (not committed)
-docs/             one-page PDFs and picker sheets
+docs/             reviewer sheets and one-page PDFs (committed, viewable on GitHub)
 ```
 
 ## Regenerating covers
@@ -22,6 +22,7 @@ docs/             one-page PDFs and picker sheets
 ```bash
 python3 src/covers.py            # writes PNGs into covers/
 python3 src/contact_sheet.py     # writes build/ previews at 220px and 68px
+python3 src/review_sheet.py      # writes docs/review_sheet.png for a phone reviewer
 ```
 
 Then open the contact sheet and judge the 68px row on distinctiveness and cohesion.

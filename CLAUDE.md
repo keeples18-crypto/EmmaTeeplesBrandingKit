@@ -80,8 +80,8 @@ Auto-fit by measuring rendered width against the safe circle's chord at the line
 height and stepping the size down. Never hard-code a size per word. Keep the two-line
 fallback in the fitter, but no current label should need it.
 
-Emma chose "OFF COURSE" over "OFF DUTY": the pun over truncation safety. Decided
-Sept 7, 2026. It is a single constant in `src/covers.py`.
+Emma approved "OFF COURSE" on Sept 7, 2026. It is final; do not reopen the "OFF DUTY"
+question. It is a single constant in `src/covers.py`.
 
 ### The 68 px test — distinctiveness and cohesion, not legibility
 

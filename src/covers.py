@@ -1,4 +1,4 @@
-"""Generate Instagram highlight covers in several visual directions.
+"""Generate Instagram highlight covers in the three shortlisted directions.
 
 Writes covers/<Direction>/01_StartHere.png ... 06_OffCourse.png.
 Canvas 1080x1920; all artwork stays inside a 640 px circle at (540, 960).
@@ -22,7 +22,7 @@ FOREST, BONE = "#1F382C", "#E8E2D5"
 
 # Instagram truncates the name under the cover at roughly 9-15 characters, so
 # labels stay short and each fits on one line. "OFF COURSE" is the one
-# exception at 10 characters: Emma chose the pun over truncation safety.
+# exception at 10 characters. Emma approved it on Sept 7, 2026.
 OFF_LABEL = "OFF COURSE"
 COVERS = [
     ("01_Start", "START"),
@@ -172,24 +172,6 @@ def arc_span(f, text, radius, gap_frac=0.35):
 
 # ---------------------------------------------------------------- directions
 
-def hairline(label):
-    """Serif word alone, gold hairline rules above and below. Core palette."""
-    img = Image.new("RGB", (W, H), CHARCOAL); d = ImageDraw.Draw(img)
-    f, gap, rows = fit(label, lambda s: font("playfair", s, 600), 0.10, R, max_size=200)
-    y0, y1 = place(d, rows, f, gap, CREAM)
-    rule(d, y0 - 60, 160, GOLD); rule(d, y1 + 58, 160, GOLD)
-    return img
-
-
-def keyline(label):
-    """Charcoal serif inside a thin gold keyline ring on cream. Core palette."""
-    img = Image.new("RGB", (W, H), CREAM); d = ImageDraw.Draw(img)
-    ring(d, 296, 3, GOLD)
-    f, gap, rows = fit(label, lambda s: font("playfair", s, 800), 0.06, 270, max_size=200)
-    place(d, rows, f, gap, CHARCOAL)
-    return img
-
-
 def disc(label):
     """Sans reversed out of a solid charcoal disc, cream halo. Core palette."""
     img = Image.new("RGB", (W, H), CREAM); d = ImageDraw.Draw(img)
@@ -215,14 +197,6 @@ def crest(label):
     return img
 
 
-def sans(label):
-    """Widely letterspaced gold sans on charcoal, no serif, no ornament. Core palette."""
-    img = Image.new("RGB", (W, H), CHARCOAL); d = ImageDraw.Draw(img)
-    f, gap, rows = fit(label, lambda s: font("montserrat", s, 600), 0.22, R, max_size=200)
-    place(d, rows, f, gap, GOLD)
-    return img
-
-
 def bleed(label):
     """Full-bleed forest ground, big bone serif at maximum scale, one gold mark.
     Heritage palette."""
@@ -233,15 +207,13 @@ def bleed(label):
     return img
 
 
+# Order here is the order on the review sheet. Retired explorations
+# (Hairline, Keyline, Sans, Numeral) live in git history before Sept 7, 2026.
 DIRECTIONS = {
-    "Hairline": lambda label, i: hairline(label),
-    "Keyline":  lambda label, i: keyline(label),
-    "Disc":     lambda label, i: disc(label),
-    "Crest":    lambda label, i: crest(label),
-    "Sans":     lambda label, i: sans(label),
-    "Bleed":    lambda label, i: bleed(label),
+    "Crest": lambda label, i: crest(label),
+    "Bleed": lambda label, i: bleed(label),
+    "Disc":  lambda label, i: disc(label),
 }
-
 
 def main():
     global SIZE_CAP
