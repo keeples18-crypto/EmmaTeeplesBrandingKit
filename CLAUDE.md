@@ -75,13 +75,22 @@ Long labels ("THE COMEBACK", "OFF COURSE") wrap to two lines and are far wider t
 "DRILLS". Auto-fit by measuring rendered width and stepping the size down. Never
 hard-code a size per word.
 
-### The legibility test — do not skip this
+### The 68 px test — distinctiveness and cohesion, not legibility
 
-Covers display at roughly **68 px** on a phone. Rendering the PNGs is not finishing the
-job. Build a contact sheet showing each cover circle-cropped at both ~220 px and 68 px,
-open it, and look at it. If the label isn't readable at 68 px, the direction fails and
-gets fixed or dropped. Dark and saturated grounds survive; thin type on cream usually
-doesn't.
+Covers display at roughly **68 px** on a phone, and Instagram prints the highlight name
+underneath each circle. So the word on the cover does not need to be readable at that
+size. The cover is an icon.
+
+What has to survive at 68 px:
+
+- **Distinctiveness.** The construction (ring, halo, badge structure, saturated ground)
+  should still be recognisable as a deliberate mark, not a dark blob with a smudge in it.
+- **Cohesion.** The six should read as one system at a glance. Same silhouette, same
+  weight, same ground.
+
+Rendering the PNGs is not finishing the job. Build a contact sheet showing each cover
+circle-cropped at both ~220 px and 68 px, open it, and look at it. A direction whose
+covers become indistinguishable from any other dark-disc-with-text account at 68 px fails.
 
 ## Highlight order mechanic — affects design decisions
 

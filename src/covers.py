@@ -4,7 +4,7 @@ Writes covers/<Direction>/01_StartHere.png ... 06_OffCourse.png.
 Canvas 1080x1920; all artwork stays inside a 640 px circle at (540, 960).
 
 Run:  python3 src/covers.py
-Then: python3 src/contact_sheet.py   # and read the 68 px row — that is the test
+Then: python3 src/contact_sheet.py   # judge the 68 px row on distinctiveness and cohesion
 """
 import math
 from pathlib import Path

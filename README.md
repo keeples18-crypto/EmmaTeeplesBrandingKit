@@ -24,4 +24,5 @@ python3 src/covers.py            # writes PNGs into covers/
 python3 src/contact_sheet.py     # writes build/ previews at 220px and 68px
 ```
 
-Then open the contact sheet and check the 68px column. That is the acceptance test.
+Then open the contact sheet and judge the 68px row on distinctiveness and cohesion.
+The word need not be readable there; Instagram prints the highlight name below the circle.

@@ -1,11 +1,12 @@
-"""Build the legibility contact sheets.
+"""Build the 68 px contact sheets.
 
 Circle-crops every cover in covers/<Direction>/ at 220 px (inspection) and
 68 px (true phone size). Writes one sheet per direction to build/<Direction>.png
 and a combined build/contact_sheet.png with every direction stacked.
 
-Open the combined sheet and read the 68 px rows. A label that cannot be read
-there fails, whatever it looks like at full size.
+Open the combined sheet and judge the 68 px rows on distinctiveness and
+cohesion. Instagram prints the highlight name under the circle, so the word
+itself need not be readable; the construction must still register as a mark.
 """
 from pathlib import Path
 
