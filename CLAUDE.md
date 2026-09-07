@@ -64,16 +64,22 @@ Two PIL gotchas that will silently ruin output:
 Canvas **1080 × 1920 PNG**. Instagram crops to a circle, so all artwork must sit inside a
 **640 px diameter circle centered at (540, 960)**. The rest is flat background.
 
-The six covers, in profile order:
+The six covers, in profile order. Numbers are file order only and never appear in the
+artwork (see the highlight-order mechanic below):
 
 ```
-01 START HERE   02 DRILLS      03 THE COMEBACK
-04 PRO SHOP     05 WELLNESS    06 OFF COURSE
+01 START      02 DRILLS     03 COMEBACK
+04 PRO SHOP   05 WELLNESS   06 OFF DUTY
 ```
 
-Long labels ("THE COMEBACK", "OFF COURSE") wrap to two lines and are far wider than
-"DRILLS". Auto-fit by measuring rendered width and stepping the size down. Never
-hard-code a size per word.
+Instagram truncates the highlight name under the circle at roughly 9-15 characters
+depending on device, so every label is 8 characters or fewer and sits on one line.
+Auto-fit by measuring rendered width against the safe circle's chord at the line's
+height and stepping the size down. Never hard-code a size per word. Keep the two-line
+fallback in the fitter, but no current label should need it.
+
+"OFF DUTY" versus "OFF COURSE" is Emma's call: the pun is better writing, "OFF DUTY" is
+safer against truncation. It is a single constant in `src/covers.py`.
 
 ### The 68 px test — distinctiveness and cohesion, not legibility
 

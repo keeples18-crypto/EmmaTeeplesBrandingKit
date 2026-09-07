@@ -20,13 +20,17 @@ CX, CY, R = 540, 960, 320            # the safe circle Instagram keeps
 CREAM, GOLD, CHARCOAL = "#F5F1E8", "#B8924A", "#1A1A1A"
 FOREST, BONE = "#1F382C", "#E8E2D5"
 
+# Instagram truncates the name under the cover at roughly 9-15 characters, so
+# labels are 8 characters or fewer and each fits on one line.
+OFF_LABEL = "OFF DUTY"        # Emma's call: "OFF COURSE" is the better pun,
+                              # "OFF DUTY" is safer against truncation.
 COVERS = [
-    ("01_StartHere", "START HERE"),
+    ("01_Start", "START"),
     ("02_Drills", "DRILLS"),
-    ("03_Comeback", "THE COMEBACK"),
+    ("03_Comeback", "COMEBACK"),
     ("04_ProShop", "PRO SHOP"),
     ("05_Wellness", "WELLNESS"),
-    ("06_OffCourse", "OFF COURSE"),
+    ("06_Off", OFF_LABEL),
 ]
 
 # ---------------------------------------------------------------- fonts
@@ -86,23 +90,39 @@ def chord_halfwidth(r, y0, y1, cy=CY):
     return math.sqrt(max(r * r - dy * dy, 0))
 
 
+# Per-direction common size. main() renders each direction twice: once to
+# learn the size every label fits at, then again capped at the smallest so all
+# six share one type size. Cohesion beats filling the circle.
+SIZE_CAP = None
+CHOSEN = []
+
+
 def fit(label, fontfn, tracking, r_inner, cy=CY, leading=1.3,
         max_size=150, min_size=30, margin=18):
     """Largest size whose lines each fit the circle's chord at their own height.
 
-    Tries one line first; falls back to two. Never hard-codes a size per word.
+    One line is preferred at any size; two lines are a fallback only when the
+    label cannot fit on one line even at min_size. Never hard-codes a size per word.
     """
-    for size in range(max_size, min_size - 1, -2):
-        f = fontfn(size)
-        gap = size * tracking
-        for lines in ([label], wrap(label)):
-            if not lines:
-                continue
-            rows = layout(lines, f, size, leading, cy)
-            ok = all(tracked_width(f, r["text"], gap) <= 2 * (chord_halfwidth(r_inner, r["y0"], r["y1"], cy) - margin)
-                     for r in rows)
-            if ok:
-                return f, gap, rows
+    def fits(lines, f, gap):
+        rows = layout(lines, f, f.size, leading, cy)
+        return rows if all(
+            tracked_width(f, r["text"], gap) <= 2 * (chord_halfwidth(r_inner, r["y0"], r["y1"], cy) - margin)
+            for r in rows) else None
+
+    if SIZE_CAP is not None:
+        max_size = min(max_size, SIZE_CAP)
+    for lines in ([label], wrap(label)):
+        if not lines:
+            continue
+        for size in range(max_size, min_size - 1, -2):
+            f = fontfn(size)
+            rows = fits(lines, f, size * tracking)
+            if rows:
+                if len(lines) == 2:
+                    print(f"  note: {label!r} needed two lines")
+                CHOSEN.append(size)
+                return f, size * tracking, rows
     raise ValueError(f"{label!r} does not fit inside r={r_inner}")
 
 
@@ -155,7 +175,7 @@ def arc_span(f, text, radius, gap_frac=0.35):
 def hairline(label):
     """Serif word alone, gold hairline rules above and below. Core palette."""
     img = Image.new("RGB", (W, H), CHARCOAL); d = ImageDraw.Draw(img)
-    f, gap, rows = fit(label, lambda s: font("playfair", s, 600), 0.10, R, max_size=130)
+    f, gap, rows = fit(label, lambda s: font("playfair", s, 600), 0.10, R, max_size=200)
     y0, y1 = place(d, rows, f, gap, CREAM)
     rule(d, y0 - 60, 160, GOLD); rule(d, y1 + 58, 160, GOLD)
     return img
@@ -165,7 +185,7 @@ def keyline(label):
     """Charcoal serif inside a thin gold keyline ring on cream. Core palette."""
     img = Image.new("RGB", (W, H), CREAM); d = ImageDraw.Draw(img)
     ring(d, 296, 3, GOLD)
-    f, gap, rows = fit(label, lambda s: font("playfair", s, 800), 0.06, 270, max_size=130)
+    f, gap, rows = fit(label, lambda s: font("playfair", s, 800), 0.06, 270, max_size=200)
     place(d, rows, f, gap, CHARCOAL)
     return img
 
@@ -175,23 +195,7 @@ def disc(label):
     img = Image.new("RGB", (W, H), CREAM); d = ImageDraw.Draw(img)
     r = 292
     d.ellipse([CX - r, CY - r, CX + r, CY + r], fill=CHARCOAL)
-    f, gap, rows = fit(label, lambda s: font("montserrat", s, 600), 0.12, r, max_size=130)
-    place(d, rows, f, gap, CREAM)
-    return img
-
-
-def numeral(label, idx):
-    """Large serif numeral in gold, small tracked label beneath. Core palette.
-
-    Fragile by design: Instagram re-sorts highlights on every edit (CLAUDE.md).
-    """
-    img = Image.new("RGB", (W, H), CHARCOAL); d = ImageDraw.Draw(img)
-    nf = font("playfair", 250, 400)
-    num = f"{idx:02d}"
-    nb = nf.getbbox(num)
-    nx, ny = CX - (nb[0] + nb[2]) / 2, CY - 80 - (nb[1] + nb[3]) / 2
-    d.text((nx, ny), num, font=nf, fill=GOLD)
-    f, gap, rows = fit(label, lambda s: font("montserrat", s, 600), 0.16, R, cy=CY + 140, max_size=64)
+    f, gap, rows = fit(label, lambda s: font("montserrat", s, 600), 0.12, r, max_size=200)
     place(d, rows, f, gap, CREAM)
     return img
 
@@ -200,13 +204,13 @@ def crest(label):
     """Badge: double gold ring, arched name top and place bottom, serif label centre.
     Heritage palette."""
     img = Image.new("RGB", (W, H), FOREST); d = ImageDraw.Draw(img)
-    ring(d, 304, 2, GOLD); ring(d, 292, 2, GOLD)
-    af = font("montserrat", 23, 600)
+    ring(d, 306, 4, GOLD); ring(d, 290, 3, GOLD)
+    af = font("montserrat", 27, 600)
     for text, is_top in (("EMMA TEEPLES GOLF", True), ("REDDING · CALIFORNIA", False)):
         step, sweep = arc_span(af, text, 258)
         start = -sweep / 2 if is_top else 180 + sweep / 2
         arched(img, text, af, 258, BONE, start, step if is_top else -step, top=is_top)
-    f, gap, rows = fit(label, lambda s: font("dmserif", s), 0.03, 222, max_size=120)
+    f, gap, rows = fit(label, lambda s: font("dmserif", s), 0.03, 212, max_size=150)
     place(d, rows, f, gap, BONE)
     return img
 
@@ -214,7 +218,7 @@ def crest(label):
 def sans(label):
     """Widely letterspaced gold sans on charcoal, no serif, no ornament. Core palette."""
     img = Image.new("RGB", (W, H), CHARCOAL); d = ImageDraw.Draw(img)
-    f, gap, rows = fit(label, lambda s: font("montserrat", s, 600), 0.22, R, max_size=120)
+    f, gap, rows = fit(label, lambda s: font("montserrat", s, 600), 0.22, R, max_size=200)
     place(d, rows, f, gap, GOLD)
     return img
 
@@ -223,7 +227,7 @@ def bleed(label):
     """Full-bleed forest ground, big bone serif at maximum scale, one gold mark.
     Heritage palette."""
     img = Image.new("RGB", (W, H), FOREST); d = ImageDraw.Draw(img)
-    f, gap, rows = fit(label, lambda s: font("dmserif", s), 0.05, R, leading=1.15, max_size=170, margin=14)
+    f, gap, rows = fit(label, lambda s: font("dmserif", s), 0.05, R, leading=1.15, max_size=220, margin=14)
     y0, y1 = place(d, rows, f, gap, BONE)
     rule(d, y1 + 56, 44, GOLD, 4)
     return img
@@ -233,7 +237,6 @@ DIRECTIONS = {
     "Hairline": lambda label, i: hairline(label),
     "Keyline":  lambda label, i: keyline(label),
     "Disc":     lambda label, i: disc(label),
-    "Numeral":  lambda label, i: numeral(label, i),
     "Crest":    lambda label, i: crest(label),
     "Sans":     lambda label, i: sans(label),
     "Bleed":    lambda label, i: bleed(label),
@@ -241,12 +244,22 @@ DIRECTIONS = {
 
 
 def main():
+    global SIZE_CAP
     for name, render in DIRECTIONS.items():
         out = ROOT / "covers" / name
         out.mkdir(parents=True, exist_ok=True)
+        for stale in out.glob("*.png"):
+            stale.unlink()                      # labels or filenames may have changed
+
+        SIZE_CAP = None; CHOSEN.clear()
+        for i, (fname, label) in enumerate(COVERS, start=1):
+            render(label, i)                    # measure only
+        SIZE_CAP = min(CHOSEN)
+
         for i, (fname, label) in enumerate(COVERS, start=1):
             render(label, i).save(out / f"{fname}.png")
-        print(f"{name:9s} {len(COVERS)} covers -> {out.relative_to(ROOT)}")
+        print(f"{name:9s} {len(COVERS)} covers at {SIZE_CAP} px -> {out.relative_to(ROOT)}")
+    SIZE_CAP = None
 
 
 if __name__ == "__main__":

@@ -11,7 +11,7 @@ language, the technical gotchas, and the legibility standard.
 ```
 brand/            palette, type specs, logo files
 covers/           Instagram highlight covers, one folder per direction
-  <Direction>/    01_StartHere.png … 06_OffCourse.png
+  <Direction>/    01_Start.png … 06_Off.png
 src/              generator scripts
 build/            contact sheets and previews (not committed)
 docs/             one-page PDFs and picker sheets
