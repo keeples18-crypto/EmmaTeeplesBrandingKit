@@ -1,4 +1,4 @@
-# emma-brand-kit
+# EmmaTeeplesBrandingKit
 
 Brand and design assets for Emma Teeples — PGA Associate golf instructor, Redding CA.
 Instagram: @emmateeples.golf
