@@ -69,17 +69,19 @@ artwork (see the highlight-order mechanic below):
 
 ```
 01 START      02 DRILLS     03 COMEBACK
-04 PRO SHOP   05 WELLNESS   06 OFF DUTY
+04 PRO SHOP   05 WELLNESS   06 OFF COURSE
 ```
 
 Instagram truncates the highlight name under the circle at roughly 9-15 characters
-depending on device, so every label is 8 characters or fewer and sits on one line.
+depending on device, so labels stay short and sit on one line. "OFF COURSE" is the one
+exception at 10 characters; if a device truncates it, the cover artwork still carries
+the full word.
 Auto-fit by measuring rendered width against the safe circle's chord at the line's
 height and stepping the size down. Never hard-code a size per word. Keep the two-line
 fallback in the fitter, but no current label should need it.
 
-"OFF DUTY" versus "OFF COURSE" is Emma's call: the pun is better writing, "OFF DUTY" is
-safer against truncation. It is a single constant in `src/covers.py`.
+Emma chose "OFF COURSE" over "OFF DUTY": the pun over truncation safety. Decided
+Sept 7, 2026. It is a single constant in `src/covers.py`.
 
 ### The 68 px test — distinctiveness and cohesion, not legibility
 

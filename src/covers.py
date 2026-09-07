@@ -21,9 +21,9 @@ CREAM, GOLD, CHARCOAL = "#F5F1E8", "#B8924A", "#1A1A1A"
 FOREST, BONE = "#1F382C", "#E8E2D5"
 
 # Instagram truncates the name under the cover at roughly 9-15 characters, so
-# labels are 8 characters or fewer and each fits on one line.
-OFF_LABEL = "OFF DUTY"        # Emma's call: "OFF COURSE" is the better pun,
-                              # "OFF DUTY" is safer against truncation.
+# labels stay short and each fits on one line. "OFF COURSE" is the one
+# exception at 10 characters: Emma chose the pun over truncation safety.
+OFF_LABEL = "OFF COURSE"
 COVERS = [
     ("01_Start", "START"),
     ("02_Drills", "DRILLS"),
